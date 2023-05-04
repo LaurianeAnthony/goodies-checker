@@ -4,15 +4,21 @@ import React, { FC, useEffect, useState } from "react";
 var qr = new QrcodeDecoder();
 
 
+enum FacingMode {
+  ENVIRONEMENT = 'environement',
+  USER = 'user'
+}
+
 export const Camera: FC = () => {
   const [scanStart, setScanStart] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
   const [qrcode, setQrcode] = useState<string>()
   const [image, setImage] = useState<string>()
+  const [facingMode, setFacingMode] = useState<FacingMode>(FacingMode.ENVIRONEMENT)
 
   const getStream = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode:{ ideal : 'environment'}} });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode: facingMode} });
       setStream(stream)
       /* use the stream */
     } catch (err) {
@@ -53,7 +59,7 @@ const startScanning =() => {
     <button onClick={() => startScanning()}>Scan a QrCode</button>
 
 
-
+  <button onClick={() => facingMode === FacingMode.ENVIRONEMENT ? setFacingMode(FacingMode.USER) : setFacingMode(FacingMode.ENVIRONEMENT)}>Switch to {facingMode === FacingMode.ENVIRONEMENT ? 'back camera' : 'front camera'}</button>
     <p>{qrcode}</p>
     {stream && scanStart && <>    
     <button 
