@@ -12,7 +12,7 @@ export const Camera: FC = () => {
 
   const getStream = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode:{ ideal : 'environnement'}} });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode:{ ideal : 'environment'}} });
       setStream(stream)
       /* use the stream */
     } catch (err) {
