@@ -4,26 +4,42 @@ import React, { FC, useEffect, useState } from "react";
 var qr = new QrcodeDecoder();
 
 
-// enum FacingMode {
-//   ENVIRONEMENT = 'environment',
-//   USER = 'user'
-// }
+enum FacingMode {
+  ENVIRONEMENT = 'environment',
+  USER = 'user'
+}
+
+type Device = 'mobile' | 'desktop'
 
 export const Camera: FC = () => {
-  const [scanStart, setScanStart] = useState(false)
+  // const [scanStart, setScanStart] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
   const [qrcode, setQrcode] = useState<string>()
   const [image, setImage] = useState<string>()
-  // const [facingMode, setFacingMode] = useState<FacingMode>(FacingMode.ENVIRONEMENT)
-  // const [track, setTrack] = useState<MediaStreamTrack | null>(null)
+  const [device, setDevice] = useState<Device>('mobile')
 
-  // const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+  useEffect(() => {
+    if (navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPad/i)
+      || navigator.userAgent.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)) {
+      setDevice('mobile')
+    } else {
+      setDevice('desktop')
+    }
+  }, [])
+
 
   const getStream = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: {
-        facingMode: { exact: 'environment'},
-      } });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: device === 'mobile' ? { exact: FacingMode.ENVIRONEMENT }: FacingMode.USER,
+        }
+      });
       setStream(stream)
       /* use the stream */
     } catch (err) {
@@ -31,67 +47,69 @@ export const Camera: FC = () => {
     }
   }
 
-  // useEffect(() =>{
-  //   if(stream){
+
+  // useEffect(() => {
+  //   if (stream) {
   //     setTrack(stream.getVideoTracks()[0])
-  //     track && track.applyConstraints( {
+  //     track && track.applyConstraints({
   //       facingMode: facingMode,
-  //     } )
+  //     })
   //   }
   // }, [facingMode, stream, track])
 
+  // useEffect(() => {
+  //   console.log('scanStart', scanStart)
+  //   if (scanStart) {
+  //     getStream()
+  //   }
+  //   else {
+  //     stream && stream.getTracks().forEach(function (track) {
+  //       track.stop();
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [scanStart])
+
   useEffect(() => {
-    console.log('scanStart', scanStart)
-    if(scanStart){
-      getStream()
-    }
-    else {
-      stream && stream.getTracks().forEach(function(track) {
-        track.stop();
+    if (image) {
+      qr.decodeFromImage(image).then((res) => {
+        setQrcode(res.data)
+        console.log("qrcode", res.data);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scanStart])
+  }, [image])
 
-useEffect(() => {
-  console.log("ici")
-  if(image){
-    qr.decodeFromImage(image).then((res) => {
-      setQrcode(res.data)
-      console.log("qrcode", res.data);
-    });
+  const startScanning = () => {
+    // setScanStart(true)
+    console.log('device',device)
+    getStream()
+    setImage('')
   }
-}, [image])
-
-const startScanning =() => {
-  setScanStart(true)
-  setImage('')
-}
 
   return <div>
     <button onClick={() => startScanning()}>Scan a QrCode</button>
-    {/* <p>Test: {Object.values(track?.getConstraints() || {}).join(',')}</p> */}
-    {/* {Object.keys(supportedConstraints).map(item => <p key={item}>{item}</p>)} */}
-  {/* <button onClick={() => facingMode === FacingMode.ENVIRONEMENT ? setFacingMode(FacingMode.USER) : setFacingMode(FacingMode.ENVIRONEMENT)}>Switch to {facingMode === FacingMode.ENVIRONEMENT ? 'front camera' : 'back camera'}</button> */}
     <p>{qrcode}</p>
-    {stream && scanStart && <>    
-    <button 
-      onClick={() => {
-        const track = stream.getVideoTracks()[0]
-        let imageCapture = new ImageCapture(track);
-        imageCapture.takePhoto().then(blob => {
-          setScanStart(false)
-          setImage(URL.createObjectURL(blob))
+    {stream && <>
+      <button
+        onClick={() => {
+          const track = stream.getVideoTracks()[0]
+          let imageCapture = new ImageCapture(track);
+          imageCapture.takePhoto().then(blob => {
+            stream && stream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+            // setScanStart(false)
+            setImage(URL.createObjectURL(blob))
 
-        }
-          
-        )
+          }
+
+          )
 
 
-      }}>
+        }}>
         take photo
       </button>
-    <video
+      <video
         autoPlay
         width="100%"
         ref={(video) => {
@@ -100,7 +118,7 @@ const startScanning =() => {
           }
         }}
       />
-      
-      </>}
+
+    </>}
   </div>
 }
