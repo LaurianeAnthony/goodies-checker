@@ -12,7 +12,7 @@ enum FacingMode {
 type Device = 'mobile' | 'desktop'
 
 export const Camera: FC = () => {
-  // const [scanStart, setScanStart] = useState(false)
+  const [scanning, setScanning] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
   const [qrcode, setQrcode] = useState<string>()
   const [image, setImage] = useState<string>()
@@ -75,12 +75,12 @@ export const Camera: FC = () => {
       qr.decodeFromImage(image).then((res) => {
         setQrcode(res.data)
         console.log("qrcode", res.data);
-      });
+      }).catch(e => {setQrcode('Nothing found')});
     }
   }, [image])
 
   const startScanning = () => {
-    // setScanStart(true)
+    setScanning(true)
     console.log('device',device)
     getStream()
     setImage('')
@@ -90,7 +90,8 @@ export const Camera: FC = () => {
     <button onClick={() => startScanning()}>Scan a QrCode</button>
     <p>{navigator.userAgent}</p>
     <p>{qrcode}</p>
-    {stream && <>
+    <img src={image} alt="" />
+    {stream && scanning && <>
       <button
         onClick={() => {
           const track = stream.getVideoTracks()[0]
@@ -99,7 +100,7 @@ export const Camera: FC = () => {
             stream && stream.getTracks().forEach(function (track) {
               track.stop();
             });
-            // setScanStart(false)
+            setScanning(false)
             setImage(URL.createObjectURL(blob))
 
           }
