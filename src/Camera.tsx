@@ -18,7 +18,7 @@ export const Camera: FC = () => {
   const [image, setImage] = useState<string>()
   const [device, setDevice] = useState<Device>('mobile')
   const [imageCapture, setImageCapture] = useState<ImageCapture | null>(null)
-  const [bitmap, setBitmap] = useState<ImageBitmap>()
+  // const [bitmap, setBitmap] = useState<ImageBitmap>()
 
   useEffect(() => {
     if (navigator.userAgent.match(/Android/i)
