@@ -4,25 +4,25 @@ import React, { FC, useEffect, useState } from "react";
 var qr = new QrcodeDecoder();
 
 
-enum FacingMode {
-  ENVIRONEMENT = 'left',
-  USER = 'right'
-}
+// enum FacingMode {
+//   ENVIRONEMENT = 'environment',
+//   USER = 'user'
+// }
 
 export const Camera: FC = () => {
   const [scanStart, setScanStart] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
   const [qrcode, setQrcode] = useState<string>()
   const [image, setImage] = useState<string>()
-  const [facingMode, setFacingMode] = useState<FacingMode>(FacingMode.ENVIRONEMENT)
-  const [track, setTrack] = useState<MediaStreamTrack | null>(null)
+  // const [facingMode, setFacingMode] = useState<FacingMode>(FacingMode.ENVIRONEMENT)
+  // const [track, setTrack] = useState<MediaStreamTrack | null>(null)
 
-  const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+  // const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
 
   const getStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: {
-        facingMode: facingMode,
+        facingMode: { exact: 'environment'},
       } });
       setStream(stream)
       /* use the stream */
@@ -31,14 +31,14 @@ export const Camera: FC = () => {
     }
   }
 
-  useEffect(() =>{
-    if(stream){
-      setTrack(stream.getVideoTracks()[0])
-      track && track.applyConstraints( {
-        facingMode: facingMode,
-      } )
-    }
-  }, [facingMode, stream, track])
+  // useEffect(() =>{
+  //   if(stream){
+  //     setTrack(stream.getVideoTracks()[0])
+  //     track && track.applyConstraints( {
+  //       facingMode: facingMode,
+  //     } )
+  //   }
+  // }, [facingMode, stream, track])
 
   useEffect(() => {
     console.log('scanStart', scanStart)
@@ -70,9 +70,9 @@ const startScanning =() => {
 
   return <div>
     <button onClick={() => startScanning()}>Scan a QrCode</button>
-    <p>Test: {Object.values(track?.getConstraints() || {}).join(',')}</p>
-    {Object.keys(supportedConstraints).map(item => <p key={item}>{item}</p>)}
-  <button onClick={() => facingMode === FacingMode.ENVIRONEMENT ? setFacingMode(FacingMode.USER) : setFacingMode(FacingMode.ENVIRONEMENT)}>Switch to {facingMode === FacingMode.ENVIRONEMENT ? 'front camera' : 'back camera'}</button>
+    {/* <p>Test: {Object.values(track?.getConstraints() || {}).join(',')}</p> */}
+    {/* {Object.keys(supportedConstraints).map(item => <p key={item}>{item}</p>)} */}
+  {/* <button onClick={() => facingMode === FacingMode.ENVIRONEMENT ? setFacingMode(FacingMode.USER) : setFacingMode(FacingMode.ENVIRONEMENT)}>Switch to {facingMode === FacingMode.ENVIRONEMENT ? 'front camera' : 'back camera'}</button> */}
     <p>{qrcode}</p>
     {stream && scanStart && <>    
     <button 
