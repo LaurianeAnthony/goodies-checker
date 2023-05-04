@@ -1,12 +1,12 @@
-import React from 'react';
-import './App.css';
-import { Camera } from './Camera';
+import React from "react";
+import "./App.css";
+import { Camera } from "./Camera";
 
 function App() {
   return (
     <div className="App">
       <header>
-        Header
+        Goodies checker
       </header>
       <Camera />
     </div>
