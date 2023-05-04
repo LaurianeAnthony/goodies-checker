@@ -31,6 +31,7 @@ export const Camera: FC = () => {
         track.stop();
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanStart])
 
 useEffect(() => {
