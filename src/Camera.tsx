@@ -37,7 +37,7 @@ export const Camera: FC = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode:  FacingMode.USER,
+          facingMode: device === 'mobile' ? { exact: FacingMode.ENVIRONEMENT }: FacingMode.USER,
         }
       });
       setStream(stream)
@@ -90,13 +90,14 @@ export const Camera: FC = () => {
     <button onClick={() => startScanning()}>Scan a QrCode</button>
     <p>{navigator.userAgent}</p>
     <p>{qrcode}</p>
-    <img src={image} width='200px' alt="" />
+    <img src={image} width="200px" alt="" />
     {stream && scanning && <>
       <button
         onClick={() => {
           const track = stream.getVideoTracks()[0]
           let imageCapture = new ImageCapture(track);
           imageCapture.takePhoto().then(blob => {
+            console.log(blob)
             stream && stream.getTracks().forEach(function (track) {
               track.stop();
             });
