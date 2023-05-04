@@ -17,6 +17,8 @@ export const Camera: FC = () => {
   const [qrcode, setQrcode] = useState<string>()
   const [image, setImage] = useState<string>()
   const [device, setDevice] = useState<Device>('mobile')
+  const [imageCapture, setImageCapture] = useState<ImageCapture | null>(null)
+  const [bitmap, setBitmap] = useState<ImageBitmap>()
 
   useEffect(() => {
     if (navigator.userAgent.match(/Android/i)
@@ -40,7 +42,11 @@ export const Camera: FC = () => {
           facingMode: device === 'mobile' ? { exact: FacingMode.ENVIRONEMENT }: FacingMode.USER,
         }
       });
+
+      const track = stream.getVideoTracks()[0]
+      let imageCapture = new ImageCapture(track);
       setStream(stream)
+      setImageCapture(imageCapture)
       /* use the stream */
     } catch (err) {
       /* handle the error */
@@ -90,19 +96,31 @@ export const Camera: FC = () => {
     <button onClick={() => startScanning()}>Scan a QrCode</button>
     <p>{navigator.userAgent}</p>
     <p>{qrcode}</p>
+    <canvas id="grabFrameCanvas"></canvas>
     <img src={image} width="200px" alt="" />
     {stream && scanning && <>
-      <button
+      {imageCapture && <button
         onClick={() => {
-          const track = stream.getVideoTracks()[0]
-          let imageCapture = new ImageCapture(track);
-          imageCapture.takePhoto().then(blob => {
-            console.log(blob)
+          imageCapture.grabFrame().then(bmp => {
+            console.log(bmp)
             stream && stream.getTracks().forEach(function (track) {
               track.stop();
             });
             setScanning(false)
-            setImage(URL.createObjectURL(blob))
+            
+            const canvas = document.createElement('canvas');
+            // resize it to the size of our ImageBitmap
+            canvas.width = bmp.width;
+            canvas.height = bmp.height;
+            // get a bitmaprenderer context
+            const ctx = canvas.getContext('bitmaprenderer');
+            ctx && ctx.transferFromImageBitmap(bmp);
+            // get it back as a Blob
+            new Promise((res) => canvas.toBlob(res)).then((blob) => {
+              console.log(blob); // Blob
+              setImage(URL.createObjectURL(blob as Blob))
+            } );
+
 
           }
 
@@ -111,7 +129,7 @@ export const Camera: FC = () => {
 
         }}>
         take photo
-      </button>
+      </button>}
       <video
         autoPlay
         width="100%"
