@@ -20,8 +20,6 @@ export const Camera: FC = () => {
   const getStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: {
-        width: { ideal: 4096 },
-        height: { ideal: 2160 },
         facingMode: facingMode,
       } });
       setStream(stream)
@@ -35,14 +33,11 @@ export const Camera: FC = () => {
     if(stream){
       setTrack(stream.getVideoTracks()[0])
       track && track.applyConstraints( {
-        width: { ideal: 4096 },
-        height: { ideal: 2160 },
         facingMode: facingMode,
       } )
     }
   }, [facingMode, stream, track])
-
-
+  
   useEffect(() => {
     console.log('scanStart', scanStart)
     if(scanStart){
