@@ -5,8 +5,8 @@ var qr = new QrcodeDecoder();
 
 
 enum FacingMode {
-  ENVIRONEMENT = 'environement',
-  USER = 'user'
+  ENVIRONEMENT = 'left',
+  USER = 'right'
 }
 
 export const Camera: FC = () => {
@@ -16,6 +16,8 @@ export const Camera: FC = () => {
   const [image, setImage] = useState<string>()
   const [facingMode, setFacingMode] = useState<FacingMode>(FacingMode.ENVIRONEMENT)
   const [track, setTrack] = useState<MediaStreamTrack | null>(null)
+
+  const supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
 
   const getStream = async () => {
     try {
@@ -37,7 +39,7 @@ export const Camera: FC = () => {
       } )
     }
   }, [facingMode, stream, track])
-  
+
   useEffect(() => {
     console.log('scanStart', scanStart)
     if(scanStart){
@@ -69,7 +71,7 @@ const startScanning =() => {
   return <div>
     <button onClick={() => startScanning()}>Scan a QrCode</button>
     <p>Test: {Object.values(track?.getConstraints() || {}).join(',')}</p>
-
+    {Object.keys(supportedConstraints).map(item => <p key={item}>{item}</p>)}
   <button onClick={() => facingMode === FacingMode.ENVIRONEMENT ? setFacingMode(FacingMode.USER) : setFacingMode(FacingMode.ENVIRONEMENT)}>Switch to {facingMode === FacingMode.ENVIRONEMENT ? 'front camera' : 'back camera'}</button>
     <p>{qrcode}</p>
     {stream && scanStart && <>    
