@@ -88,6 +88,7 @@ export const Camera: FC = () => {
 
   return <div>
     <button onClick={() => startScanning()}>Scan a QrCode</button>
+    <p>{navigator.userAgent}</p>
     <p>{qrcode}</p>
     {stream && <>
       <button
