@@ -40,7 +40,7 @@ export const Camera: FC = () => {
         facingMode: facingMode,
       } )
     }
-  }, [facingMode])
+  }, [facingMode, stream, track])
 
 
   useEffect(() => {
