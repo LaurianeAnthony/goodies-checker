@@ -61,7 +61,7 @@ module.exports = {
       }
     ],
   },
-  
+
   overrides: [
     {
       files: ["**/*.ts?(x)"],
@@ -81,7 +81,9 @@ module.exports = {
       // ruleset, disable the JS one.
       rules: {
         "@typescript-eslint/no-array-constructor": "warn",
-        "no-array-constructor": "off"
+        "no-array-constructor": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["error"]
       }
     }
   ],

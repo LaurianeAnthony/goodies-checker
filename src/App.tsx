@@ -1,14 +1,30 @@
 import React from "react";
 import "./App.css";
-import { Camera } from "./Camera";
+import { QueryClient, QueryClientProvider } from "react-query";
+import AppProvider from "./AppProvider";
+import { Scanning } from "./pages/Scanning";
 
-function App() {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+})
+
+
+const App = () => {
   return (
     <div className="App">
-      <header>
-        Goodies checker
-      </header>
-      <Camera />
+      <QueryClientProvider client={queryClient}>
+        <AppProvider>
+          <header>
+            Goodies checker
+          </header>
+          <Scanning />
+        </AppProvider>
+      </QueryClientProvider>
     </div>
   );
 }
