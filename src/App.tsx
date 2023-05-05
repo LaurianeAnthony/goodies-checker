@@ -1,7 +1,11 @@
 import React from "react";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "react-query";
-import AppProvider from "./AppProvider";
+import styled from "styled-components";
+import AppProvider, { useAppContext } from "./AppProvider";
+import { COLORS } from "./constants";
+import { Home } from "./pages/Home";
+import { Result } from "./pages/Result";
 import { Scanning } from "./pages/Scanning";
 
 const queryClient = new QueryClient({
@@ -13,16 +17,27 @@ const queryClient = new QueryClient({
   },
 })
 
+const StyledLayout = styled.div`
+  background: ${COLORS.background.default}
+`
+
+const Content = () => {
+  const {step } = useAppContext()
+  return (
+    <StyledLayout>
+      {step === "HOME" && <Home />}
+      {step === "SCANNING" && <Scanning />}
+      {step === "RESULT" && <Result />}
+    </StyledLayout>
+  )
+}
 
 const App = () => {
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <AppProvider>
-          <header>
-            Goodies checker
-          </header>
-          <Scanning />
+          <Content />
         </AppProvider>
       </QueryClientProvider>
     </div>

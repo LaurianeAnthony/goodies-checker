@@ -9,16 +9,19 @@ import React, {
 } from "react"
 import { Barcode } from "./types"
 
-
-
+type Step = "HOME" | "SCANNING" | "RESULT"
 export interface AppContextType {
   barcode: Barcode
   setBarcode: Dispatch<SetStateAction<Barcode>>
+  step: Step
+  setStep: Dispatch<SetStateAction<Step>>
 }
 
 export const INITIAL_APP_CONTEXT: AppContextType = {
   barcode: null,
   setBarcode: () => undefined,
+  step: "HOME",
+  setStep: () => undefined
 }
 
 
@@ -28,8 +31,8 @@ export const useAppContext = (): AppContextType => useContext(AppContext)
 const AppProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
- 
   const [barcode, setBarcode] = useState<Barcode>(null)
+  const [step, setStep] = useState<Step>("HOME")
 
  
 
@@ -37,7 +40,9 @@ const AppProvider: FC<PropsWithChildren> = ({
     <AppContext.Provider
       value={{
         barcode,
-        setBarcode
+        setBarcode,
+        step,
+        setStep
       }}
     >
       {children}

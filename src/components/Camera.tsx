@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components"
 import QrcodeDecoder from "../../node_modules/qrcode-decoder/dist/index"
 import { useAppContext } from "../AppProvider";
+import { COLORS } from "../constants";
 import { Device } from "../types";
 import { getUserDevice } from "../utils/getUserDevice";
 
@@ -10,15 +11,37 @@ var qr = new QrcodeDecoder();
 const StyledButton = styled.button`
   width: 100%;
   height: 100%;
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  position: relative;
 `
 
 const StyledCameraContainer = styled.div`
-  width: calc(100% - 40px);
-  height: calc(50vh);
-  margin: 20px;
+  width: 100%;
+  height: 100vh;
   
   display:flex;
   justify-content: center;
+`
+
+const StyledOverlay = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: ${COLORS.background.overlay};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const StyledQrCodeLimit = styled.div`
+  border: 6px solid ${COLORS.content.default};
+  height: 300px;
+  width: 300px;
 `
 
 type CameraProps = {
@@ -28,20 +51,19 @@ type CameraProps = {
 
 export const Camera: FC<CameraProps> = ({ onError}) => {
   const [device, setDevice] = useState<Device>("mobile")
-
-  const [isScanning, setIsScanning] = useState(false)
   const [isStreamLoading, setIsStreamLoading] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
 
   const [image, setImage] = useState<string>()
 
-  const {setBarcode} = useAppContext()
+  const {setBarcode, setStep} = useAppContext()
   
   const getStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: device === "mobile" ? { exact: "environment" } : "user",
+          // facingMode: device === "mobile" ? "user": "user",
         }
       });
       setIsStreamLoading(false)
@@ -54,19 +76,20 @@ export const Camera: FC<CameraProps> = ({ onError}) => {
 
   useEffect(() => {
     setDevice(getUserDevice(navigator.userAgent))
+    getStream()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if (image) {
       qr.decodeFromImage(image).then((res) => {
-        console.log(res.data)
         if(res.data){
-          return setBarcode(res.data)
+          setBarcode(res.data)
+          return setStep("RESULT")
         }
 
         return onError("Code not found")
       }).catch(e => {
-        console.log(e)
         onError(e)
       });
     }
@@ -74,21 +97,12 @@ export const Camera: FC<CameraProps> = ({ onError}) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image])
 
-  const startScanning = () => {
-    setImage("")
-    setBarcode(null)
-
-    setIsStreamLoading(true)
-    setIsScanning(true)
-
-    getStream()
-  }
 
   if(isStreamLoading) return <p>Loading</p>
   
   return (
     <StyledCameraContainer>
-      {stream && isScanning ? 
+      {stream  &&
         <>
           <StyledButton
             onClick={() => {
@@ -96,11 +110,10 @@ export const Camera: FC<CameraProps> = ({ onError}) => {
               const imageCapture = new ImageCapture(track);
 
               imageCapture.grabFrame().then(bmp => {
-                console.log(bmp)
                 stream && stream.getTracks().forEach(function (track) {
                   track.stop();
                 });
-                setIsScanning(false)
+                // setIsScanning(false)
 
                 const canvas = document.createElement("canvas");
                 // resize it to the size of our ImageBitmap
@@ -115,7 +128,7 @@ export const Camera: FC<CameraProps> = ({ onError}) => {
                 });
               })
             }}
-          >
+          ><StyledOverlay><StyledQrCodeLimit /></StyledOverlay>
             <video
               autoPlay
               width="100%"
@@ -130,8 +143,6 @@ export const Camera: FC<CameraProps> = ({ onError}) => {
             </video>
           </StyledButton>
         </>
-        : 
-        <StyledButton onClick={() => startScanning()}>Scan a QrCode</StyledButton>
       }
     </StyledCameraContainer>
   )
