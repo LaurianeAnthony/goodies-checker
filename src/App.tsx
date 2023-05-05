@@ -18,7 +18,8 @@ const queryClient = new QueryClient({
 })
 
 const StyledLayout = styled.div`
-  background: ${COLORS.background.default}
+  background: ${COLORS.background.default};
+  height: 100vh;
 `
 
 const Content = () => {

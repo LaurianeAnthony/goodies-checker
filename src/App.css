@@ -5,3 +5,7 @@ body {
 button {
   font-family: 'Roboto', sans-serif;
 }
+
+div {
+  box-sizing: border-box;
+}

@@ -7,14 +7,7 @@ import { Typography } from "../components/Typography";
 import { COLORS, MARGIN_DEFAULT } from "../constants";
 import { useBilletwebUser } from "../hooks/useBilletwebUser";
 
-const StyledResult = styled.div`
-  color: ${COLORS.content.default};
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  height: 100vh;
-  
-`
+
 const StyledHeader = styled.header`
   background: ${COLORS.content.primary};
   padding: ${MARGIN_DEFAULT}px;
@@ -30,15 +23,7 @@ const StyledHeader = styled.header`
 
 const StyledContent = styled.div`
   margin: ${MARGIN_DEFAULT}px;
-  flex-grow: 1;
-  justify-content: space-between;
-  display: flex;
-  flex-direction: column;
-`
-
-const StyledBoxes = styled.div`
-  display: flex;
-  justify-content: space-between;
+  
 `
 
 
@@ -48,10 +33,19 @@ const StyledBox = styled.div`
   border-radius: 4px;
 
   padding: 8px;
-  width: 43%;
+  margin-bottom: 8px;
+  width: 100%;
+  min-height: 100px;
 
   display: flex;
   flex-direction: column;
+`
+
+const StyledButtonWrapper = styled.div`
+  margin: 12px;
+  width: calc(100% - 24px);
+  position: absolute;
+  bottom: 0px;
 `
 
 
@@ -62,27 +56,28 @@ export const Result = () => {
     return <Alert text="Error" severity="error" />
   }
   return (
-    <StyledResult>
+    <div>
       <StyledHeader>
         <Typography variant="h2">{user.firstname} {user.name}</Typography>
         <Typography variant="body">{user.barcode}</Typography>
       </StyledHeader>
 
       <StyledContent>
-        <StyledBoxes>
-          <StyledBox>
-            <Typography variant="footnote">Goodies</Typography>
-            <Typography variant="body" textAlign="center">{user.goodies === "1" ? "Oui" : "Non"}</Typography>
-          </StyledBox>
-          <StyledBox>
-            <Typography variant="footnote">T-shirt</Typography>
-            <Typography variant="body"textAlign="center">{user.tshirtSize}</Typography></StyledBox>
-        </StyledBoxes>
+        {/* <StyledBoxes> */}
+        <StyledBox>
+          <Typography variant="footnote">Goodies</Typography>
+          <Typography variant="body" textAlign="center">{user.goodies === "1" ? "Oui" : "Non"}</Typography>
+        </StyledBox>
+        <StyledBox>
+          <Typography variant="footnote">T-shirt</Typography>
+          <Typography variant="body"textAlign="center">{user.tshirtSize}</Typography></StyledBox>
+        {/* </StyledBoxes> */}
 
-        <Button onClick={() => setStep("SCANNING")}>Scanner un billet</Button>
       </StyledContent>
+      
+      <StyledButtonWrapper><Button onClick={() => setStep("SCANNING")}>Scanner un billet</Button></StyledButtonWrapper>
 
-    </StyledResult>
+    </div>
     
   );
 }

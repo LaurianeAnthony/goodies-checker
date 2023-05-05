@@ -22,6 +22,8 @@ const StyledButton = styled.button`
 const StyledCameraContainer = styled.div`
   width: 100%;
   height: 100vh;
+
+  background-color: ${COLORS.content.default};
   
   display:flex;
   justify-content: center;
@@ -62,8 +64,8 @@ export const Camera: FC<CameraProps> = ({ onError}) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: device === "mobile" ? { exact: "environment" } : "user",
-          // facingMode: device === "mobile" ? "user": "user",
+          // facingMode: device === "mobile" ? { exact: "environment" } : "user",
+          facingMode: device === "mobile" ? "user": "user",
         }
       });
       setIsStreamLoading(false)
