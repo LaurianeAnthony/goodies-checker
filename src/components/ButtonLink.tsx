@@ -1,43 +1,31 @@
 import React, {  FC, PropsWithChildren } from "react";
 import { Link, To } from "react-router-dom";
 import styled from "styled-components";
-import { VariantButton } from "./Button";
+import { ButtonCssProps, buttonCss } from "./Button";
 import { Typography } from "./Typography";
 import { THEME } from "../constants/theme";
-import { MarginProps, margin } from "../utils/ui/margin";
+import { margin } from "../utils/ui/margin";
 
 type ButtonProps = {
-  variant: VariantButton
   to: To
-} & MarginProps
+} & ButtonCssProps
 
 const StyledButton = styled(Link)<ButtonProps>`
-
-  background: ${({variant}) => THEME.colors.interactive[variant].default};
-  border: 1px solid ${({variant}) => THEME.colors.border[variant]};
-  height: 40px;
-
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  &:hover {
-    background: ${({variant}) => THEME.colors.interactive[variant].hover};
-    cursor: pointer;
-  }
-
-  border-radius: 4px;
-  font-size: 18px;
-  font-weight: 500;
-  width: 100%;
-
+  ${buttonCss};
   ${margin}
 `
 
-export const ButtonLink: FC<PropsWithChildren<ButtonProps>> = ({ children, variant, ...props}) => {
-
+export const ButtonLink: FC<PropsWithChildren<ButtonProps>> = ({ children, size="m", variant, ...props}) => {
   return (
-    <StyledButton variant={variant} {...props}><Typography variant="h3" color={THEME.colors.content.above[variant]}>{children}</Typography></StyledButton>
+    <StyledButton variant={variant}  size={size} {...props}>
+      <Typography variant="h3" color={THEME.colors.content.above[variant]}>
+        {children}
+      </Typography>
+    </StyledButton>
   )
 }

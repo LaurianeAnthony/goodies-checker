@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import QrcodeDecoder from "../../node_modules/qrcode-decoder/dist/index"
 import { useAppContext } from "../AppProvider";
-import { Alert } from "../components/Alert";
 import { CameraGuide } from "../components/CameraGuide";
 import { Typography } from "../components/Typography";
 import { THEME } from "../constants/theme";
@@ -49,18 +48,17 @@ export const Scanning: FC = () => {
   const [device, setDevice] = useState<Device>("mobile")
   const [isStreamLoading, setIsStreamLoading] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
-
   const [image, setImage] = useState<string>()
-  const [ error, setError ] = useState<string | null>(null)
-  const navigate= useNavigate()
-  const {setBarcode, setStep} = useAppContext()
+
+  const navigate = useNavigate()
+  const {setNotify} = useAppContext()
   
   const getStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: device === "mobile" ? { exact: "environment" } : "user",
-          // facingMode: device === "mobile" ? "user" : "user",
+          // facingMode: device === "mobile" ? { exact: "environment" } : "user",
+          facingMode: device === "mobile" ? "user" : "user",
           // facingMode: device === "mobile" ? { exact: "environment" } : { exact: "environment" },
         }
       });
@@ -68,7 +66,7 @@ export const Scanning: FC = () => {
       setStream(stream)
     } catch (err) {
       setIsStreamLoading(false)
-      setError((err as DOMException).message)
+      setNotify({text: (err as DOMException).message, severity: "error"})
     }
   }
 
@@ -81,19 +79,14 @@ export const Scanning: FC = () => {
   useEffect(() => {
     if (image) {
       qr.decodeFromImage(image).then((res) => {
-        console.log(res.data)
         if(res.data){
-          setBarcode(res.data)
-          navigate(`/user/${res.data}`)
-          return setStep("RESULT")
+          return navigate(`/user/${res.data}`)
         }
-         
         getStream()
 
-        return setError("Code not found")
+        setNotify({text: "QrCode not found", severity: "error"})
       }).catch(e => {
-
-        setError(e)
+        setNotify({text: e, severity: "error"})
       });
     }
   
@@ -104,10 +97,8 @@ export const Scanning: FC = () => {
   if(isStreamLoading) return <p>Loading</p>
   
   return (
-    <>
-      {error && <Alert severity="error" text={error} />}
-      <StyledCameraContainer>
-        {stream  &&
+    <StyledCameraContainer>
+      {stream  &&
         <>
           <StyledButton
             onClick={() => {
@@ -157,7 +148,7 @@ export const Scanning: FC = () => {
             </video>
           </StyledButton>
         </>
-        }
-      </StyledCameraContainer></>
+      }
+    </StyledCameraContainer>
   )
 }

@@ -1,10 +1,10 @@
 import React, {  FC, ReactElement } from "react";
-import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
+import { BiArrowBack, BiSearchAlt2, BiX } from "react-icons/bi";
 import styled from "styled-components";
 import { VariantButton } from "./Button";
 import { THEME } from "../constants/theme";
-
-export type IconName = "search" | "arrow-left"
+ 
+export type IconName = "search" | "arrow-left" | "x"
 
 type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant: VariantButton
@@ -14,7 +14,8 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export const icons:Record<IconName, ReactElement> = {
   "search" : <BiSearchAlt2 />,
-  "arrow-left": <BiArrowBack />
+  "arrow-left": <BiArrowBack />,
+  "x": <BiX />
 }
 
 const StyledButton = styled.button<Omit<IconButtonProps, "iconName">>`

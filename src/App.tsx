@@ -1,10 +1,11 @@
 import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { getFirestore } from "firebase/firestore/lite";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AppProvider from "./AppProvider";
 import { THEME } from "./constants/theme";
@@ -13,6 +14,7 @@ import { Home } from "./pages/Home";
 import { Result } from "./pages/Result";
 import { Scanning } from "./pages/Scanning";
 import { Search } from "./pages/Search";
+import { SignIn } from "./pages/SignIn";
 
 
 const firebaseConfig = {
@@ -29,6 +31,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+export const auth = getAuth(app);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,17 +49,41 @@ const StyledLayout = styled.div`
 
 
 const App = () => {
+  const [userIsConnected, setUserIsConnected] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserIsConnected(true)
+        navigate("/home")
+      } else {
+        console.log("user is logged out")
+      }
+    });   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <AppProvider firestoreDb={db}>
           <StyledLayout>
+
+            {userIsConnected && 
+              <Routes>
+                <Route path="/home" element={<Home />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/scanning" element={<Scanning />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/user/:id" element={<Result />} />
+              </Routes>
+            }
+
+
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/scanning" element={<Scanning />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/user/:id" element={<Result />} />
+              <Route path="/" element={<SignIn />} />
+              <Route path="*" element={<p>Page not found</p>} />
             </Routes>
           </StyledLayout>
         </AppProvider>

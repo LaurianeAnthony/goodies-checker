@@ -1,12 +1,14 @@
 import React, { FC } from "react";
 import styled from "styled-components";
+import { IconButton } from "./IconButton";
 import { THEME } from "../constants/theme";
 
 
-type Severity = "error" | "success"
+export type Severity = "error" | "success"
 type AlertProps = {
   severity: Severity
   text: string
+  onClose?: () => void
 }
 
 const StyledAlert = styled.div<{severity: Severity}>`
@@ -20,12 +22,19 @@ const StyledAlert = styled.div<{severity: Severity}>`
   position: absolute;
   box-sizing: border-box;
   top: 0px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  z-index: 1000;
 `
 
-export const Alert: FC<AlertProps> = ({severity, text}) => {
+export const Alert: FC<AlertProps> = ({severity, text, onClose}) => {
   return (
     <StyledAlert severity={severity}>
       {text}
+      <IconButton variant={severity} iconName="x" onClick={onClose} />  
     </StyledAlert>
   )
 }

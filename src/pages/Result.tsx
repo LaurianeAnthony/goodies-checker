@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAppContext } from "../AppProvider";
-import { Alert } from "../components/Alert";
 import { BackButton } from "../components/BackButton";
 import { Box } from "../components/Box";
 import { ButtonLink } from "../components/ButtonLink";
@@ -44,9 +43,9 @@ type Goodies = {
 export const Result = () => {
   const {id} = useParams<{id: string}>()
   const [goodies, setGoodies] = useState<Goodies>({goodies: false, tshirt: false})
-  const {firestoreDb} = useAppContext()
+  const {firestoreDb, setNotify} = useAppContext()
   const {user, isLoading} = useBilletwebUser({barcode: id})
-  console.log(id)
+
   useEffect(() => {
     if (firestoreDb && user){
       getDoc(doc(firestoreDb, "attendees-goodies-checker", user.id)).then(querySnapshot => {
@@ -61,7 +60,8 @@ export const Result = () => {
     return null
   }
   if(!user && !isLoading){
-    return <Alert text="Error" severity="error" />
+    setNotify({text: "Impossible de charger l'utilisateur", severity: "error"})
+    return null
   }
 
   const onToggleGoodies = (type: "goodies" | "tshirt", value: boolean):void => {
@@ -95,7 +95,7 @@ export const Result = () => {
       
 
       <StyledButtonWrapper display="flex"> 
-        <ButtonLink to="/scanning" variant="primary" mr="s">Scanner un billet</ButtonLink>
+        <ButtonLink fullWidth to="/scanning" variant="primary" mr="s">Scanner un billet</ButtonLink>
         <IconButtonLink to="/search" variant="main" iconName="search" />
       </StyledButtonWrapper>
 

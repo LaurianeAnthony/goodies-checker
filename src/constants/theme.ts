@@ -35,7 +35,9 @@ export const THEME = {
       above: {
         primary: "#242424",
         main: "#A4A4A4",
-        contrast: "#FFFFFF"
+        contrast: "#FFFFFF",
+        success: "#FFFFFF",
+        error: "#FFFFFF",
       }
     },
     interactive: {
@@ -53,6 +55,10 @@ export const THEME = {
       },
       success: {
         default: "#047E61",
+        hover: "#03634C",
+      },
+      error: {
+        default: "#930000",
         hover: "#03634C",
       }
     }
