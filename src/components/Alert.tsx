@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import { COLORS } from "../constants";
+import { THEME } from "../constants/theme";
 
 
 type Severity = "error" | "success"
@@ -10,9 +10,9 @@ type AlertProps = {
 }
 
 const StyledAlert = styled.div<{severity: Severity}>`
-  color: ${({severity}) => COLORS.content[severity]};
-  background-color: ${({severity}) => COLORS.background[severity]};
-  border: 1px solid ${({severity}) => COLORS.border[severity]};
+  color: ${({severity}) => THEME.colors.content[severity]};
+  background-color: ${({severity}) => THEME.colors.background[severity]};
+  border: 1px solid ${({severity}) => THEME.colors.border[severity]};
 
   padding: 12px;
   margin: 12px;

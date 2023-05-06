@@ -1,18 +1,14 @@
 import React from "react";
-import styled from "styled-components";
 import { useAppContext } from "../AppProvider";
+import { Box } from "../components/Box";
 import { Button } from "../components/Button";
 
-
-const StyledContent = styled.div`
-  margin: 12px;
-`
 export const Home = () => {
   const { setStep } = useAppContext()
   return (
-    <StyledContent>
-      <Button onClick={() => setStep("SCANNING")}>Scanner un billet</Button>
-    </StyledContent>
+    <Box m="m">
+      <Button variant="primary" onClick={() => setStep("SCANNING")}>Scanner un billet</Button>
+    </Box>
   );
 }
 

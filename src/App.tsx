@@ -3,7 +3,7 @@ import "./App.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 import styled from "styled-components";
 import AppProvider, { useAppContext } from "./AppProvider";
-import { COLORS } from "./constants";
+import { THEME } from "./constants/theme";
 import { Home } from "./pages/Home";
 import { Result } from "./pages/Result";
 import { Scanning } from "./pages/Scanning";
@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 })
 
 const StyledLayout = styled.div`
-  background: ${COLORS.background.default};
+  background: ${THEME.colors.background.contrast};
   height: 100vh;
 `
 

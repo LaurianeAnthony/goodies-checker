@@ -2,15 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { useAppContext } from "../AppProvider";
 import { Alert } from "../components/Alert";
+import { Box } from "../components/Box";
 import { Button } from "../components/Button";
+import { IconButton } from "../components/IconButton";
 import { Typography } from "../components/Typography";
-import { COLORS, MARGIN_DEFAULT } from "../constants";
+import { UserInfoBox } from "../components/UserInfoBox";
+import { THEME } from "../constants/theme";
 import { useBilletwebUser } from "../hooks/useBilletwebUser";
 
-
 const StyledHeader = styled.header`
-  background: ${COLORS.content.primary};
-  padding: ${MARGIN_DEFAULT}px;
+  background: ${THEME.colors.content.primary};
+  padding: ${THEME.spacing.xl}px;
 
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
@@ -21,32 +23,15 @@ const StyledHeader = styled.header`
   height: 150px;
 `
 
-const StyledContent = styled.div`
-  margin: ${MARGIN_DEFAULT}px;
-  
-`
 
 
-const StyledBox = styled.div`
-  background-color: ${COLORS.background.contrast};
-  border: 1px solid ${COLORS.border.default};
-  border-radius: 4px;
-
-  padding: 8px;
-  margin-bottom: 8px;
-  width: 100%;
-  min-height: 100px;
-
-  display: flex;
-  flex-direction: column;
-`
-
-const StyledButtonWrapper = styled.div`
+const StyledButtonWrapper = styled(Box)`
   margin: 12px;
   width: calc(100% - 24px);
   position: absolute;
   bottom: 0px;
 `
+
 
 
 export const Result = () => {
@@ -62,20 +47,15 @@ export const Result = () => {
         <Typography variant="body">{user.barcode}</Typography>
       </StyledHeader>
 
-      <StyledContent>
-        {/* <StyledBoxes> */}
-        <StyledBox>
-          <Typography variant="footnote">Goodies</Typography>
-          <Typography variant="body" textAlign="center">{user.goodies === "1" ? "Oui" : "Non"}</Typography>
-        </StyledBox>
-        <StyledBox>
-          <Typography variant="footnote">T-shirt</Typography>
-          <Typography variant="body"textAlign="center">{user.tshirtSize}</Typography></StyledBox>
-        {/* </StyledBoxes> */}
-
-      </StyledContent>
+      <Box m="xl">
+        <UserInfoBox title="Goodies" subtitle={user.goodies === "1" ? "Oui" : "Non"} isActive={true}/>
+        <UserInfoBox title="T-shirt" subtitle={user.tshirtSize} isActive={false}/>
+      </Box>
       
-      <StyledButtonWrapper><Button onClick={() => setStep("SCANNING")}>Scanner un billet</Button></StyledButtonWrapper>
+      <StyledButtonWrapper display="flex">
+        <Button variant="primary" onClick={() => setStep("SCANNING")} mr="s">Scanner un billet</Button>
+        <IconButton variant="main" iconName="search" />  
+      </StyledButtonWrapper>
 
     </div>
     
