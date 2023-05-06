@@ -1,5 +1,5 @@
 export type BilletwebUser = {
-  id: string,
+  ext_id: string,
   firstname: string,
   name: string,
 	barcode: string,

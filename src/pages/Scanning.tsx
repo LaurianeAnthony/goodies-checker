@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import QrcodeDecoder from "../../node_modules/qrcode-decoder/dist/index"
 import { useAppContext } from "../AppProvider";
@@ -51,15 +52,15 @@ export const Scanning: FC = () => {
 
   const [image, setImage] = useState<string>()
   const [ error, setError ] = useState<string | null>(null)
-
+  const navigate= useNavigate()
   const {setBarcode, setStep} = useAppContext()
   
   const getStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: device === "mobile" ? { exact: "environment" } : "user",
-          // facingMode: device === "mobile" ? "user": "user",
+          // facingMode: device === "mobile" ? { exact: "environment" } : "user",
+          facingMode: device === "mobile" ? { exact: "environment" } : { exact: "environment" },
         }
       });
       setIsStreamLoading(false)
@@ -79,13 +80,18 @@ export const Scanning: FC = () => {
   useEffect(() => {
     if (image) {
       qr.decodeFromImage(image).then((res) => {
+        console.log(res.data)
         if(res.data){
           setBarcode(res.data)
+          navigate(`/user/${res.data}`)
           return setStep("RESULT")
         }
+         
+        getStream()
 
         return setError("Code not found")
       }).catch(e => {
+
         setError(e)
       });
     }
@@ -97,9 +103,10 @@ export const Scanning: FC = () => {
   if(isStreamLoading) return <p>Loading</p>
   
   return (
-    <StyledCameraContainer>
+    <>
       {error && <Alert severity="error" text={error} />}
-      {stream  &&
+      <StyledCameraContainer>
+        {stream  &&
         <>
           <StyledButton
             onClick={() => {
@@ -149,7 +156,7 @@ export const Scanning: FC = () => {
             </video>
           </StyledButton>
         </>
-      }
-    </StyledCameraContainer>
+        }
+      </StyledCameraContainer></>
   )
 }

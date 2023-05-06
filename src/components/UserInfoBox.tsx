@@ -5,17 +5,23 @@ import { Box } from "./Box";
 import { Typography } from "../components/Typography";
 import { THEME } from "../constants/theme";
 
-const StyledBox = styled(Box)`
-  padding: 8px;
+const StyledButton = styled.button`
+  padding: 0;
   margin-bottom: 8px;
   width: 100%;
   min-height: 100px;
+background: none;
+border: none;
+`
+const StyledBox = styled(Box)`
+  padding: 8px;
+  width: 100%;
 
   display: flex;
   flex-direction: column;
 `
 
-const StyledToggleButton = styled.button<{isToggle?: boolean}>`
+const StyledActiveIcon = styled.div<{isActive?: boolean}>`
   border: none;
   width: 35px;
   height: 35px;
@@ -24,35 +30,29 @@ const StyledToggleButton = styled.button<{isToggle?: boolean}>`
   align-items:center;
   justify-content: center;
   background: ${THEME.colors.interactive.contrast.default};
-  &:hover {
-    background: ${THEME.colors.interactive.contrast.hover};
-    cursor: pointer;
-  }
 
-  ${({isToggle}) => isToggle && `
+  ${({isActive}) => isActive && `
     background: ${THEME.colors.interactive.success.default};
-    &:hover {
-      background: ${THEME.colors.interactive.success.hover};
-    }
-    `}
+  `}
 `
 
-type UserInfoBoxProps = {title: string, subtitle: string, isActive?: boolean}
+type UserInfoBoxProps = {title: string, subtitle: string, isActive?: boolean, onClick: () => void}
 
-export const UserInfoBox:FC<UserInfoBoxProps> = ({title, subtitle, isActive}) => {
+export const UserInfoBox:FC<UserInfoBoxProps> = ({title, subtitle, isActive, onClick}) => {
 
   return (
-
-    <StyledBox component="button" withBorder colorSet={isActive ? "success" : "main"}  borderRadius={4}>
-      <Typography variant="body">{title}</Typography>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="space-around" width="100%" height="100px">
-        <Typography variant="h3" textAlign="center">{subtitle}</Typography>
-        <StyledToggleButton isToggle={isActive}>
-          {isActive ?
-            <BiCheck size="30" color={THEME.colors.content.above.primary}/> :
-            <BiX size="30" color={THEME.colors.content.above.main}/> }
-        </StyledToggleButton></Box>
-    </StyledBox>
+    <StyledButton  onClick={() => onClick()}>
+      <StyledBox withBorder colorSet={isActive ? "success" : "main"}  borderRadius={4}>
+        <Typography textAlign="left" variant="body">{title}</Typography>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="space-around" width="100%" height="100px">
+          <Typography variant="h3" textAlign="center">{subtitle}</Typography>
+          <StyledActiveIcon isActive={isActive}>
+            {isActive ?
+              <BiCheck size="30" color={THEME.colors.content.above.primary}/> :
+              <BiX size="30" color={THEME.colors.content.above.main}/> }
+          </StyledActiveIcon></Box>
+      </StyledBox>
+    </StyledButton>
        
   );
 }

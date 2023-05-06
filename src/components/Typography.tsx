@@ -1,6 +1,7 @@
 import React, {  FC, PropsWithChildren } from "react";
 import styled, { css } from "styled-components";
 import { THEME } from "../constants/theme";
+import { DisplayProps, display } from "../utils/ui/display";
 import { MarginProps, margin } from "../utils/ui/margin";
 import { PaddingProps, padding } from "../utils/ui/padding";
 
@@ -11,7 +12,7 @@ type TypographyProps = {
   textAlign?: React.CSSProperties["textAlign"],
   color?: string,
   backgroundColor?: string
-} & MarginProps & PaddingProps
+} & MarginProps & PaddingProps & DisplayProps
 
 
 type htmlTag = "h1" | "h2" | "h3" | "h4" | "span"
@@ -62,7 +63,7 @@ const StyledTypography = styled.div<TypographyProps>`
 
   ${margin}
   ${padding}
-
+  ${display}
 `
 
 

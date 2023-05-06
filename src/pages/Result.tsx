@@ -1,10 +1,13 @@
-import React from "react";
+import { getDoc, doc, deleteDoc, setDoc } from "firebase/firestore/lite";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAppContext } from "../AppProvider";
 import { Alert } from "../components/Alert";
+import { BackButton } from "../components/BackButton";
 import { Box } from "../components/Box";
-import { Button } from "../components/Button";
-import { IconButton } from "../components/IconButton";
+import { ButtonLink } from "../components/ButtonLink";
+import { IconButtonLink } from "../components/IconButtonLink";
 import { Typography } from "../components/Typography";
 import { UserInfoBox } from "../components/UserInfoBox";
 import { THEME } from "../constants/theme";
@@ -18,7 +21,7 @@ const StyledHeader = styled.header`
   border-bottom-right-radius: 24px;
 
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   flex-direction: column;
   height: 150px;
 `
@@ -32,29 +35,68 @@ const StyledButtonWrapper = styled(Box)`
   bottom: 0px;
 `
 
+type Goodies = {
+  goodies: boolean
+  tshirt: boolean
+}
 
 
 export const Result = () => {
-  const {barcode, setStep} = useAppContext()
-  const {user} = useBilletwebUser(barcode)
-  if(!user){
+  const {id} = useParams<{id: string}>()
+  const [goodies, setGoodies] = useState<Goodies>({goodies: false, tshirt: false})
+  const {firestoreDb} = useAppContext()
+  const {user, isLoading} = useBilletwebUser({barcode: id})
+  console.log(id)
+  useEffect(() => {
+    if (firestoreDb && user){
+      getDoc(doc(firestoreDb, "attendees-goodies-checker", user.id)).then(querySnapshot => {
+        setGoodies(querySnapshot.data() as Goodies);
+      });
+
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id])
+
+  if(!firestoreDb || !user){
+    return null
+  }
+  if(!user && !isLoading){
     return <Alert text="Error" severity="error" />
   }
+
+  const onToggleGoodies = (type: "goodies" | "tshirt", value: boolean):void => {
+    deleteDoc(doc(firestoreDb, "attendees-goodies-checker", user.id)).then(() => {
+      const newGoodies: Goodies = {
+        ...goodies,
+        ...(type === "goodies" ? {goodies: value}: {tshirt: value})
+      }
+      setDoc(doc(firestoreDb, "attendees-goodies-checker", user.id), newGoodies).then(() => {
+        setGoodies(newGoodies)
+      })
+    });
+  }
+  
+
+
   return (
     <div>
       <StyledHeader>
-        <Typography variant="h2">{user.firstname} {user.name}</Typography>
-        <Typography variant="body">{user.barcode}</Typography>
+        <BackButton />
+        <Box display="flex" flexDirection="column" justifyContent="flex-end">
+          <Typography variant="h2">{user.fullname}</Typography>
+          <Typography variant="body">{user.barcode}</Typography>
+        </Box>
       </StyledHeader>
 
       <Box m="xl">
-        <UserInfoBox title="Goodies" subtitle={user.goodies === "1" ? "Oui" : "Non"} isActive={true}/>
-        <UserInfoBox title="T-shirt" subtitle={user.tshirtSize} isActive={false}/>
+        <UserInfoBox title="Goodies" subtitle={user.goodies === "1" ? "Oui" : "Non"} isActive={goodies?.goodies} onClick={() => onToggleGoodies("goodies", !goodies?.goodies)}/>
+        <UserInfoBox title="T-shirt" subtitle={user.tshirtSize} isActive={goodies?.tshirt}  onClick={() => onToggleGoodies("tshirt", !goodies?.tshirt)}/>
       </Box>
       
-      <StyledButtonWrapper display="flex">
-        <Button variant="primary" onClick={() => setStep("SCANNING")} mr="s">Scanner un billet</Button>
-        <IconButton variant="main" iconName="search" />  
+
+      <StyledButtonWrapper display="flex"> 
+        <ButtonLink to="/scanning" variant="primary" mr="s">Scanner un billet</ButtonLink>
+        <IconButtonLink to="/search" variant="main" iconName="search" />
       </StyledButtonWrapper>
 
     </div>

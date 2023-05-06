@@ -33,7 +33,7 @@ export const THEME = {
       error: "#930000",
       success: "#047E61",
       above: {
-        primary: "#FFFFFF",
+        primary: "#242424",
         main: "#A4A4A4",
         contrast: "#242424"
       }

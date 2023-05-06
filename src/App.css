@@ -6,6 +6,6 @@ button {
   font-family: 'Roboto', sans-serif;
 }
 
-div {
+div, input {
   box-sizing: border-box;
 }

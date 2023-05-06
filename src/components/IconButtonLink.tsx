@@ -1,29 +1,29 @@
-import React, {  FC, ReactElement } from "react";
-import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
+import React, {  FC } from "react";
+import { Link, To } from "react-router-dom";
 import styled from "styled-components";
 import { VariantButton } from "./Button";
+import { IconName, icons } from "./IconButton";
 import { THEME } from "../constants/theme";
 
-export type IconName = "search" | "arrow-left"
 
-type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type IconButtonProps = {
   variant: VariantButton
   iconName: IconName
+  to: To
 }
 
-
-export const icons:Record<IconName, ReactElement> = {
-  "search" : <BiSearchAlt2 />,
-  "arrow-left": <BiArrowBack />
-}
-
-const StyledButton = styled.button<Omit<IconButtonProps, "iconName">>`
+const StyledButton = styled(Link)<Omit<IconButtonProps, "iconName">>`
 
   background: ${({variant}) => THEME.colors.interactive[variant].default};
   color: ${({variant}) => THEME.colors.content.above[variant]};
   border: 1px solid ${({variant}) => THEME.colors.border[variant]};
   height: 40px;
   width: 40px;
+
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: ${({variant}) => THEME.colors.interactive[variant].hover};
@@ -36,7 +36,7 @@ const StyledButton = styled.button<Omit<IconButtonProps, "iconName">>`
 
 `
 
-export const IconButton: FC<IconButtonProps> = ({ iconName, variant, ...props}) => {
+export const IconButtonLink: FC<IconButtonProps> = ({ iconName, variant, ...props}) => {
 
   return (
     <StyledButton variant={variant} {...props}>{React.cloneElement(icons[iconName], {color: THEME.colors.content.above[variant], size: 25})}</StyledButton>
