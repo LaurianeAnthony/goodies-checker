@@ -1,0 +1,1 @@
+export type BorderRadius = 4 | 8

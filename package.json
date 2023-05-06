@@ -10,11 +10,18 @@
     "@types/node": "^16.18.25",
     "@types/react": "^18.2.1",
     "@types/react-dom": "^18.2.3",
+    "@types/styled-components": "^5.1.26",
     "@types/w3c-image-capture": "^1.0.7",
+    "babel-eslint": "^10.1.0",
+    "firebase": "^9.21.0",
     "qrcode-decoder": "^0.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.8.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
+    "styled-components": "^5.3.10",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -22,13 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "eject": "react-scripts eject",
+    "lint": "eslint -c .eslintrc.js --ext .js,.jsx,.ts,.tsx .",
+    "lint:fix": "npm run lint -- --fix"
   },
   "browserslist": {
     "production": [
