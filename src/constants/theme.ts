@@ -35,7 +35,7 @@ export const THEME = {
       above: {
         primary: "#242424",
         main: "#A4A4A4",
-        contrast: "#242424"
+        contrast: "#FFFFFF"
       }
     },
     interactive: {

@@ -48,7 +48,7 @@ export const UserInfoBox:FC<UserInfoBoxProps> = ({title, subtitle, isActive, onC
           <Typography variant="h3" textAlign="center">{subtitle}</Typography>
           <StyledActiveIcon isActive={isActive}>
             {isActive ?
-              <BiCheck size="30" color={THEME.colors.content.above.primary}/> :
+              <BiCheck size="30" color={THEME.colors.content.above.contrast}/> :
               <BiX size="30" color={THEME.colors.content.above.main}/> }
           </StyledActiveIcon></Box>
       </StyledBox>

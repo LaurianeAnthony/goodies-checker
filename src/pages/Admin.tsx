@@ -12,7 +12,7 @@ export const Admin = () => {
 
   return (
     <Box p="xl" height="100vh" >
-      <BackButton variant='contrast' />
+      <BackButton variant='main' />
       <Typography variant='h2' mb="l">Administration</Typography>
       <Button variant="primary" onClick={() => syncBilletwebAttendees()}>Sync participants depuis Billetweb</Button>
     </Box>

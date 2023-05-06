@@ -59,8 +59,9 @@ export const Scanning: FC = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          // facingMode: device === "mobile" ? { exact: "environment" } : "user",
-          facingMode: device === "mobile" ? { exact: "environment" } : { exact: "environment" },
+          facingMode: device === "mobile" ? { exact: "environment" } : "user",
+          // facingMode: device === "mobile" ? "user" : "user",
+          // facingMode: device === "mobile" ? { exact: "environment" } : { exact: "environment" },
         }
       });
       setIsStreamLoading(false)
@@ -135,7 +136,7 @@ export const Scanning: FC = () => {
           >
             <StyledOverlay>
               <Typography variant="body" 
-                color={THEME.colors.content.above.primary} 
+                color={THEME.colors.content.above.contrast} 
                 backgroundColor={hexToRGB(THEME.colors.content.main, 0.5)}
                 px="s"
                 mb="s"
