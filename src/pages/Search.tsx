@@ -23,7 +23,7 @@ export const Search = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(attendees){
+    if(attendees && query){
       const result = attendees.filter(attendee => attendee.fullname.toLowerCase().includes(query.toLowerCase()))
       setResult(result)
     }
