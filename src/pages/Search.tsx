@@ -1,42 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { BackButton } from "../components/BackButton";
 import { Box } from "../components/Box";
 import { Button } from "../components/Button";
+import { TextField } from "../components/TextField";
 import { Typography } from "../components/Typography";
-import { THEME } from "../constants/theme";
 import useAttendees from "../hooks/useAttendees";
-import { User } from "../types";
-
-const StyledInput = styled.input`
-  height: 40px;
-  width: 100%;
-  padding: ${THEME.spacing.m}px;
-  margin-bottom: ${THEME.spacing.xl}px;
-`
+import { Attendee } from "../types";
 
 export const Search = () => {
   const [query, setQuery] = useState<string>("")
-  const [result, setResult] = useState<User[]>([])
+  const [result, setResult] = useState<Attendee[]>([])
   const attendees = useAttendees()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(attendees && query){
+    if(attendees){
       const result = attendees.filter(attendee => attendee.fullname.toLowerCase().includes(query.toLowerCase()))
       setResult(result)
     }
-  }, [query, attendees])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
 
   return (
-    <Box p="xl">   
+    <Box p="xl">      
       <BackButton variant="main" />   
-      <StyledInput type="text" placeholder="Rechercher par nom" onChange={(value ) => setQuery(value.target.value)}/>
 
+      <TextField type="text" placeholder="Rechercher par nom" onChange={(value ) => setQuery(value.target.value)} mb="xl"/>
+    
       {query && result.map(user => 
         <Button fullWidth key={user.id} mb="s" variant='main' onClick={() => {
-          navigate(`/user/${user.barcode}`)
+          navigate(`/attendee/${user.barcode}`)
         }}>
           <Typography variant='body'>{user.fullname}</Typography></Button>
       )}
@@ -45,6 +39,7 @@ export const Search = () => {
         <Typography variant="footnote" textAlign="center" display="block">Aucun utilisateur trouvé</Typography>
       }
     </Box>
+  
   );
 }
 

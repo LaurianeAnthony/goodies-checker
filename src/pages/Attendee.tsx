@@ -10,7 +10,7 @@ import { IconButtonLink } from "../components/IconButtonLink";
 import { Typography } from "../components/Typography";
 import { UserInfoBox } from "../components/UserInfoBox";
 import { THEME } from "../constants/theme";
-import { useBilletwebUser } from "../hooks/useBilletwebUser";
+import { useBilletwebAttendee } from "../hooks/useBilletwebAttendee";
 
 const StyledHeader = styled.header`
   background: ${THEME.colors.content.primary};
@@ -40,37 +40,37 @@ type Goodies = {
 }
 
 
-export const Result = () => {
+export const Attendee = () => {
   const {id} = useParams<{id: string}>()
   const [goodies, setGoodies] = useState<Goodies>({goodies: false, tshirt: false})
   const {firestoreDb, setNotify} = useAppContext()
-  const {user, isLoading} = useBilletwebUser({barcode: id})
+  const {attendee, isLoading} = useBilletwebAttendee({barcode: id})
 
   useEffect(() => {
-    if (firestoreDb && user){
-      getDoc(doc(firestoreDb, "attendees-goodies-checker", user.id)).then(querySnapshot => {
+    if (firestoreDb && attendee){
+      getDoc(doc(firestoreDb, "attendees-goodies-checker", attendee.id)).then(querySnapshot => {
         setGoodies(querySnapshot.data() as Goodies);
       });
 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id])
+  }, [attendee?.id])
 
-  if(!firestoreDb || !user){
+  if(!firestoreDb || !attendee){
     return null
   }
-  if(!user && !isLoading){
+  if(!attendee && !isLoading){
     setNotify({text: "Impossible de charger l'utilisateur", severity: "error"})
     return null
   }
 
   const onToggleGoodies = (type: "goodies" | "tshirt", value: boolean):void => {
-    deleteDoc(doc(firestoreDb, "attendees-goodies-checker", user.id)).then(() => {
+    deleteDoc(doc(firestoreDb, "attendees-goodies-checker", attendee.id)).then(() => {
       const newGoodies: Goodies = {
         ...goodies,
         ...(type === "goodies" ? {goodies: value}: {tshirt: value})
       }
-      setDoc(doc(firestoreDb, "attendees-goodies-checker", user.id), newGoodies).then(() => {
+      setDoc(doc(firestoreDb, "attendees-goodies-checker", attendee.id), newGoodies).then(() => {
         setGoodies(newGoodies)
       })
     });
@@ -83,14 +83,14 @@ export const Result = () => {
       <StyledHeader>
         <BackButton />
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
-          <Typography variant="h2">{user.fullname}</Typography>
-          <Typography variant="body">{user.barcode}</Typography>
+          <Typography variant="h2">{attendee.fullname}</Typography>
+          <Typography variant="body">{attendee.barcode}</Typography>
         </Box>
       </StyledHeader>
 
       <Box m="xl">
-        <UserInfoBox title="Goodies" subtitle={user.goodies === "1" ? "Oui" : "Non"} isActive={goodies?.goodies} onClick={() => onToggleGoodies("goodies", !goodies?.goodies)}/>
-        <UserInfoBox title="T-shirt" subtitle={user.tshirtSize} isActive={goodies?.tshirt}  onClick={() => onToggleGoodies("tshirt", !goodies?.tshirt)}/>
+        <UserInfoBox title="Goodies" subtitle={attendee.goodies === "1" ? "Oui" : "Non"} isActive={goodies?.goodies} onClick={() => onToggleGoodies("goodies", !goodies?.goodies)}/>
+        <UserInfoBox title="T-shirt" subtitle={attendee.tshirtSize} isActive={goodies?.tshirt}  onClick={() => onToggleGoodies("tshirt", !goodies?.tshirt)}/>
       </Box>
       
 

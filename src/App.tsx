@@ -10,11 +10,11 @@ import styled from "styled-components";
 import AppProvider from "./AppProvider";
 import { THEME } from "./constants/theme";
 import { Admin } from "./pages/Admin";
+import { Attendee } from "./pages/Attendee";
 import { Home } from "./pages/Home";
-import { Result } from "./pages/Result";
+import { Login } from "./pages/Login";
 import { Scanning } from "./pages/Scanning";
 import { Search } from "./pages/Search";
-import { SignIn } from "./pages/SignIn";
 
 
 const firebaseConfig = {
@@ -44,7 +44,8 @@ const queryClient = new QueryClient({
 
 const StyledLayout = styled.div`
   background: ${THEME.colors.background.contrast};
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
 `
 
 
@@ -70,19 +71,18 @@ const App = () => {
         <AppProvider firestoreDb={db}>
           <StyledLayout>
 
-            {userIsConnected && 
-              <Routes>
-                <Route path="/home" element={<Home />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/scanning" element={<Scanning />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/user/:id" element={<Result />} />
-              </Routes>
-            }
-
-
             <Routes>
-              <Route path="/" element={<SignIn />} />
+              {userIsConnected && 
+                <>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/scanning" element={<Scanning />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/attendee/:id" element={<Attendee />} />
+                </>
+              }
+              
+              <Route path="/" element={<Login />} />
               <Route path="*" element={<p>Page not found</p>} />
             </Routes>
           </StyledLayout>

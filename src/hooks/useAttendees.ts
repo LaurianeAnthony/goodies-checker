@@ -2,24 +2,25 @@
 
 import { useQuery } from "react-query"
 import { getBilletwebAttendees } from "../services/getBilletwebAttendees"
-import { User } from "../types";
-import { BilletwebApiError, BilletwebUser } from "../types/billetweb";
-import { formatBilletwebAttendeeToUser } from "../utils/formatBillewebAttendeeToUser";
+import { Attendee } from "../types";
+import { BilletwebApiError, BilletwebAttendee } from "../types/billetweb";
+import { formatBilletwebAttendeeToAttendee } from "../utils/formatBillewebAttendeeToUser";
+import { saveAttendeesToLocalStorage } from "../utils/saveAttendeesToLocalStorage";
 
-const useAttendees = (): User[] => {
+const useAttendees = (): Attendee[] => {
   const lsAttendees = localStorage.getItem("attendees")
 
   const attendees = lsAttendees ? JSON.parse(lsAttendees) : []
   
-  const {data} = useQuery<BilletwebUser[], BilletwebApiError>(
+  const {data} = useQuery<BilletwebAttendee[], BilletwebApiError>(
     ["BILLET_WEB_USER_ID"],
     () => getBilletwebAttendees(),
     {enabled: Boolean(!lsAttendees || lsAttendees.length === 0)}
   )
 
-  const users = data ? data.map(user => formatBilletwebAttendeeToUser(user)) : null
-  if(!lsAttendees) {
-    localStorage.setItem("attendees", JSON.stringify(users))
+  const users = data ? data.map(user => formatBilletwebAttendeeToAttendee(user)) : null
+  if(!lsAttendees && users) {
+    saveAttendeesToLocalStorage(users)
   }
 
   return lsAttendees ? attendees : users

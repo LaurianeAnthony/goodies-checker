@@ -80,7 +80,7 @@ export const Scanning: FC = () => {
     if (image) {
       qr.decodeFromImage(image).then((res) => {
         if(res.data){
-          return navigate(`/user/${res.data}`)
+          return navigate(`/attendee/${res.data}`)
         }
         getStream()
 

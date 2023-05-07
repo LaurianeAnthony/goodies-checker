@@ -1,4 +1,4 @@
-export type BilletwebUser = {
+export type BilletwebAttendee = {
   ext_id: string,
   firstname: string,
   name: string,

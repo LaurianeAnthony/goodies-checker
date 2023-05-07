@@ -1,7 +1,7 @@
-import { User } from "../types"
-import { BilletwebUser } from "../types/billetweb"
+import { Attendee } from "../types"
+import { BilletwebAttendee } from "../types/billetweb"
 
-export const formatBilletwebAttendeeToUser = (attendee: BilletwebUser): User => {
+export const formatBilletwebAttendeeToAttendee = (attendee: BilletwebAttendee): Attendee => {
   return {
     id: attendee.ext_id,
     fullname: attendee.firstname + " " + attendee.name,

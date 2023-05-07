@@ -3,16 +3,17 @@
 import { useMutation } from "react-query"
 import { useAppContext } from "../AppProvider";
 import { getBilletwebAttendees } from "../services/getBilletwebAttendees"
-import { BilletwebUser } from "../types/billetweb";
-import { formatBilletwebAttendeeToUser } from "../utils/formatBillewebAttendeeToUser";
+import { BilletwebAttendee } from "../types/billetweb";
+import { formatBilletwebAttendeeToAttendee } from "../utils/formatBillewebAttendeeToUser";
+import { saveAttendeesToLocalStorage } from "../utils/saveAttendeesToLocalStorage";
 
 const useBilletwebAttendeesMutation = () => {
   const { setNotify } = useAppContext()
 
   const mutationOptions = {
-    onSuccess: (data: BilletwebUser[]) => {
-      const users = data.map(attendee => formatBilletwebAttendeeToUser(attendee))
-      localStorage.setItem("attendees", JSON.stringify(users))
+    onSuccess: (data: BilletwebAttendee[]) => {
+      const users = data.map(attendee => formatBilletwebAttendeeToAttendee(attendee))
+      saveAttendeesToLocalStorage(users)
       
       setNotify({text: "Liste synchronisée avec succès", severity: "success"})
     },
