@@ -1,6 +1,6 @@
 import { getDoc, doc, deleteDoc, setDoc } from "firebase/firestore/lite";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useAppContext } from "../AppProvider";
 import { BackButton } from "../components/BackButton";
@@ -46,6 +46,8 @@ export const Attendee = () => {
   const {firestoreDb, setNotify} = useAppContext()
   const {attendee, isLoading} = useBilletwebAttendee({barcode: id})
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     if (firestoreDb && attendee){
       getDoc(doc(firestoreDb, "attendees-goodies-checker", attendee.id)).then(querySnapshot => {
@@ -81,7 +83,7 @@ export const Attendee = () => {
   return (
     <div>
       <StyledHeader>
-        <BackButton />
+        <BackButton onClick={() => navigate("/home")}/>
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
           <Typography variant="h2">{attendee.fullname}</Typography>
           <Typography variant="body">{attendee.barcode}</Typography>

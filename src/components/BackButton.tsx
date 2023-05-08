@@ -5,13 +5,13 @@ import { VariantButton } from "./Button";
 import { IconButton } from "./IconButton";
 
 
-export const BackButton: FC<{variant?: VariantButton}> = ({variant = "primary"}) => {
+export const BackButton: FC<{variant?: VariantButton, onClick?: () => void}> = ({variant = "primary", onClick}) => {
   const navigate = useNavigate()  
 
 
   return (
     <Box mb="m">
-      <IconButton onClick={() => navigate(-1)} variant={variant} iconName="arrow-left"/>
+      <IconButton onClick={() => onClick ? onClick() : navigate(-1)} variant={variant} iconName="arrow-left"/>
     </Box>
   );
 }
