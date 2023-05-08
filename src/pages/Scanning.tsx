@@ -57,9 +57,8 @@ export const Scanning: FC = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          // facingMode: device === "mobile" ? { exact: "environment" } : "user",
-          facingMode: device === "mobile" ? "user" : "user",
-          // facingMode: device === "mobile" ? { exact: "environment" } : { exact: "environment" },
+          facingMode: device === "mobile" ? { exact: "environment" } : "user",
+          // facingMode: device === "mobile" ? "user" : "user",
         }
       });
       setIsStreamLoading(false)

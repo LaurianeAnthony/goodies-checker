@@ -1,11 +1,12 @@
 import { signOut } from "@firebase/auth";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { auth } from "../App";
 import { useAppContext } from "../AppProvider";
 import { Box } from "../components/Box";
 import { Button } from "../components/Button";
 import { ButtonLink } from "../components/ButtonLink";
+import { Link } from "../components/Link";
 import { Typography } from "../components/Typography";
 import { THEME } from "../constants/theme";
 
