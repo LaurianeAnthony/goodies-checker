@@ -86,7 +86,7 @@ export const Attendee = () => {
         <BackButton onClick={() => navigate("/home")}/>
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
           <Typography variant="h2">{attendee.fullname}</Typography>
-          <Typography variant="body">{attendee.barcode}</Typography>
+          <Typography variant="body">{attendee.barcode} • {attendee.id}</Typography>
         </Box>
       </StyledHeader>
 
